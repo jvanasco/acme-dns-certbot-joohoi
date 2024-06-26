@@ -43,6 +43,33 @@ $ certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py
 ```
 Note that the `--debug-challenges` is mandatory here to pause the Certbot execution before asking Let's Encrypt to validate the records and let you to manually add the CNAME records to your main DNS zone.
 
+Your screen will show text that looks like the following:
+```
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Challenges loaded. Press continue to submit to CA.
+
+The following FQDNs should return a TXT resource record with the value
+mentioned:
+
+FQDN: _acme-challenge.example.com
+Expected value: {{EXPECTED_VALUE}}
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+```
+
+Ignore this. Scroll up and look for the text several lines above that reads:
+```
+Hook '--manual-auth-hook' for example.com ran with output:
+ Please add the following CNAME record to your main DNS zone:
+ _acme-challenge.example.com CNAME aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.auth.acme-dns.io.
+ acme-dns-auth | update_txt_record {'username': '11111111-2222-3333-4444-555555555555', 'password': 'AAAAAAAAAAAAAAAAAAAAAAA-1111111111111111', 'fulldomain': 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.auth.acme-dns.io', 'subdomain': 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', 'allowfrom': []} {{EXPECTED_VALUE}}
+```
+
+The relevant info for the CNAME you must create is in the lines:
+```
+ Please add the following CNAME record to your main DNS zone:
+ _acme-challenge.example.com CNAME aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.auth.acme-dns.io.
+```
+
 After adding the prompted CNAME records to your zone(s), wait for a bit for the changes to propagate over the main DNS zone name servers. This takes anywhere from few seconds up to a few minutes, depending on the DNS service provider software and configuration. Hit enter to continue as prompted to ask Let's Encrypt to validate the records.
 
 After the initial run, Certbot is able to automatically renew your certificates using the stored per-domain acme-dns credentials. 
